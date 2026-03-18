@@ -66,6 +66,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('/configuracoes/permissoes/{user}', [RoleAssignmentController::class, 'update'])->name('roles.update');
         Route::get('/configuracoes/funcoes/nova', [RoleAssignmentController::class, 'createRole'])->name('roles.create');
         Route::post('/configuracoes/funcoes', [RoleAssignmentController::class, 'storeRole'])->name('roles.store');
+        Route::delete('/documentos/{documento}', [DocumentoController::class, 'destroy'])
+      ->name('documentos.destroy')
+      ->middleware('role:sindico|admin'); // Camada extra de proteção
 });
     });
 });

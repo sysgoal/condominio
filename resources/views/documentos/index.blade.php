@@ -84,16 +84,26 @@
                     @endif
                 </div>
 
-                <div class="flex-shrink-0 w-full md:w-auto">
+                <div class="flex items-center gap-3 w-full md:w-auto">
                     @if($documento->arquivo_path)
-                        <a href="{{ asset('storage/' . $documento->arquivo_path) }}" target="_blank" class="block w-full text-center bg-slate-50 hover:bg-indigo-50 text-indigo-600 border border-slate-200 hover:border-indigo-200 font-bold py-2 px-6 rounded-lg transition-colors">
-                            <i class="fa-solid fa-download mr-2"></i> Baixar Arquivo
+                        <a href="{{ asset('storage/' . $documento->arquivo_path) }}" target="_blank" class="flex-1 md:flex-none text-center bg-slate-50 hover:bg-indigo-50 text-indigo-600 border border-slate-200 hover:border-indigo-200 font-bold py-2 px-6 rounded-lg transition-colors whitespace-nowrap">
+                            <i class="fa-solid fa-download mr-2"></i> Baixar
                         </a>
                     @else
-                        <span class="block w-full text-center bg-slate-50 text-slate-400 border border-slate-100 font-medium py-2 px-6 rounded-lg text-sm cursor-not-allowed" title="Nenhum arquivo anexado">
-                            <i class="fa-solid fa-file-lines mr-1"></i> Apenas Texto
+                        <span class="flex-1 md:flex-none text-center bg-slate-50 text-slate-400 border border-slate-100 font-medium py-2 px-6 rounded-lg text-sm cursor-not-allowed">
+                            Apenas Texto
                         </span>
                     @endif
+
+                    @hasanyrole('admin|sindico')
+                    <form action="{{ route('documentos.destroy', $documento->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja apagar este documento permanentemente?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="p-2 text-slate-300 hover:text-red-500 transition-colors" title="Excluir Documento">
+                            <i class="fa-solid fa-trash-can text-xl"></i>
+                        </button>
+                    </form>
+                    @endhasanyrole
                 </div>
             </div>
         @empty

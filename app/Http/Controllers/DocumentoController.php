@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Documento;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentoController extends Controller
 {
@@ -54,4 +55,20 @@ class DocumentoController extends Controller
 
         return redirect()->route('documentos.index')->with('success', 'Documento salvo com sucesso!');
     }
+
+public function destroy(Documento $documento)
+{
+    // 1. Verifica a permissão via Policy
+    $this->authorize('delete', $documento);
+
+    // 2. Apaga o arquivo físico do servidor
+    if (Storage::disk('public')->exists($documento->caminho)) {
+        Storage::disk('public')->delete($documento->caminho);
+    }
+
+    // 3. Deleta o registro do banco de dados
+    $documento->delete();
+
+    return back()->with('success', 'Documento removido com sucesso!');
+}
 }
