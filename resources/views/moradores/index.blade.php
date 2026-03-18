@@ -118,7 +118,12 @@
                                         <i class="fa-solid {{ $user->is_active ? 'fa-user-slash' : 'fa-user-check' }}"></i>
                                     </button>
                                 </form>
-
+                                <button type="button" 
+                                onclick="openRoleModal('{{ $user->id }}', '{{ $user->name }}', {{ $user->roles->pluck('id') }})"
+                                class="text-indigo-600 hover:text-indigo-900 bg-indigo-50 p-2 rounded-lg transition-colors"
+                                title="Gerenciar Permissões">
+                            <i class="fa-solid fa-user-shield"></i>
+                        </button>
                                 <a href="{{ route('moradores.edit', $user->id) }}" 
                                    class="inline-flex items-center justify-center w-9 h-9 text-indigo-600 hover:text-white bg-indigo-50 hover:bg-indigo-600 rounded-lg transition-all" 
                                    title="Editar Morador">
@@ -154,4 +159,60 @@
         @endif
     </div>
 </div>
+<div id="roleModal" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden">
+        <form id="roleForm" method="POST">
+            @csrf
+            @method('PATCH')
+            
+            <div class="p-6 border-b border-slate-100">
+                <h3 class="text-xl font-bold text-slate-800" id="modalUserName">Nome do Usuário</h3>
+                <p class="text-sm text-slate-500">Selecione as funções deste morador no sistema.</p>
+            </div>
+
+            <div class="p-6 space-y-4">
+                @foreach(\Spatie\Permission\Models\Role::all() as $role)
+                <label class="flex items-center p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-all">
+                    <input type="checkbox" name="roles[]" value="{{ $role->name }}" 
+                           id="role_{{ $role->id }}"
+                           class="w-5 h-5 text-indigo-600 border-slate-300 rounded focus:ring-indigo-500">
+                    <div class="ml-3">
+                        <span class="block text-sm font-bold text-slate-700 uppercase">{{ $role->name }}</span>
+                        <span class="block text-[10px] text-slate-400">Permissões de {{ $role->name }} ativas</span>
+                    </div>
+                </label>
+                @endforeach
+            </div>
+
+            <div class="p-6 bg-slate-50 flex justify-end gap-3">
+                <button type="button" onclick="closeRoleModal()" class="px-4 py-2 text-sm font-bold text-slate-500">Cancelar</button>
+                <button type="submit" class="px-6 py-2 bg-indigo-600 text-white rounded-lg font-bold text-sm shadow-md hover:bg-indigo-700 transition-all">
+                    Salvar Alterações
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openRoleModal(userId, userName, userRoles) {
+        document.getElementById('modalUserName').innerText = userName;
+        document.getElementById('roleForm').action = `/configuracoes/permissoes/${userId}`;
+        
+        // Resetar checkboxes
+        document.querySelectorAll('#roleForm input[type="checkbox"]').forEach(el => el.checked = false);
+        
+        // Marcar as que o usuário já tem
+        userRoles.forEach(roleId => {
+            const check = document.getElementById(`role_${roleId}`);
+            if(check) check.checked = true;
+        });
+
+        document.getElementById('roleModal').classList.remove('hidden');
+    }
+
+    function closeRoleModal() {
+        document.getElementById('roleModal').classList.add('hidden');
+    }
+</script>
 @endsection

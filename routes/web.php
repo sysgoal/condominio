@@ -7,7 +7,9 @@ use App\Http\Controllers\EnqueteController;
 use App\Http\Controllers\InteracaoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MoradorController;
+use App\Http\Controllers\RoleAssignmentController;
 use Illuminate\Support\Facades\Route;
+
 
 Route::redirect('/', '/login');
 
@@ -55,13 +57,16 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/contas/nova', [ContaController::class, 'create'])->name('contas.create');
         Route::post('/contas', [ContaController::class, 'store'])->name('contas.store');
-        
         Route::post('/enquetes', [EnqueteController::class, 'store'])->name('enquetes.store');
-        
         Route::get('/documentos/novo', [DocumentoController::class, 'create'])->name('documentos.create');
         Route::post('/documentos', [DocumentoController::class, 'store'])->name('documentos.store');
-
         Route::get('/financeiro/relatorio', [ContaController::class, 'relatorio'])->name('contas.relatorio');
+        Route::middleware(['auth', 'role:sindico|admin'])->group(function () {
+        Route::get('/configuracoes/permissoes', [RoleAssignmentController::class, 'index'])->name('roles.index');
+        Route::patch('/configuracoes/permissoes/{user}', [RoleAssignmentController::class, 'update'])->name('roles.update');
+        Route::get('/configuracoes/funcoes/nova', [RoleAssignmentController::class, 'createRole'])->name('roles.create');
+        Route::post('/configuracoes/funcoes', [RoleAssignmentController::class, 'storeRole'])->name('roles.store');
+});
     });
 });
 
