@@ -48,7 +48,7 @@
         
         <div class="h-16 flex items-center justify-between px-6 border-b border-indigo-900/50 bg-indigo-950 shrink-0">
             <h1 class="text-xl font-bold tracking-wider flex items-center">
-                <i class="fa-solid fa-building-circle-check mr-2 text-indigo-400"></i> CondoAdmin
+                <i class="fa-solid fa-building-circle-check mr-2 text-indigo-400"></i> Edifício Santa Fé
             </h1>
             <button @click="sidebarOpen = false" class="lg:hidden text-indigo-300 hover:text-white transition-colors">
                 <i class="fa-solid fa-xmark text-2xl"></i>
