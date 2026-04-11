@@ -34,7 +34,7 @@ class MoradorController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', \Illuminate\Validation\Rules\Password::defaults()],
+          //  'password' => ['required', \Illuminate\Validation\Rules\Password::defaults()],
             'bloco' => ['nullable', 'string', 'max:50'],
             'apartamento' => ['required', 'string', 'max:50'],
             'telefone' => ['nullable', 'string', 'max:20'],

@@ -40,10 +40,7 @@
                     <label class="block text-sm font-medium text-slate-700 mb-1">E-mail *</label>
                     <input type="email" name="email" required class="w-full border-slate-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-3 border">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Senha Inicial *</label>
-                    <input type="password" name="password" required class="w-full border-slate-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 p-3 border">
-                </div>
+               
             </div>
 
             <h3 class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4 border-b pb-2">Dados do Condomínio</h3>

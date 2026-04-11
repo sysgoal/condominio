@@ -18,13 +18,8 @@
     </div>
 
     <div class="space-y-4">
-        {{-- Mensagem de Sucesso Padrão --}}
-        @if(session('success'))
-            <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-lg shadow-sm flex items-center">
-                <i class="fa-solid fa-circle-check text-green-500 mr-3 text-lg"></i>
-                <span class="text-green-800 font-medium">{{ session('success') }}</span>
-            </div>
-        @endif
+       
+       
 
         {{-- Alerta de Nova Senha Gerada --}}
         @if(session('temp_password'))
