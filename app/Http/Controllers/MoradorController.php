@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Str; 
 use App\Notifications\NovaSenhaMorador; 
+use Illuminate\Support\Facades\DB;
+use App\Notifications\BoasVindasMorador;
 
 class MoradorController extends Controller
 {
@@ -38,25 +40,41 @@ class MoradorController extends Controller
             'telefone' => ['nullable', 'string', 'max:20'],
         ]);
 
+       
+       
+        try {
+            return DB::transaction(function () use ($request) {
+                // 1. Gerar senha
+                $senhaTemporaria = Str::random(8);
+
+                // 2. Criar o Usuário
         // 2. Cria o Usuário (Acesso ao sistema)
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'password' => bcrypt($senhaTemporaria),
+                    'is_active' => true,
+                ]);
 
-        // 3. Dá a ele o papel de Morador (Segurança do Spatie)
-        $user->assignRole('morador');
-
-        // 4. Salva os dados específicos do condomínio na tabela 'moradores'
+                // 3. Criar o registro na tabela moradores (vinculando ao user_id)
         Morador::create([
             'user_id' => $user->id,
             'bloco' => $request->bloco,
             'apartamento' => $request->apartamento,
             'telefone' => $request->telefone,
         ]);
+                // 4. Atribuir Cargo
+                $user->assignRole('morador');
 
-        return redirect()->route('moradores.index')->with('success', 'Morador cadastrado com sucesso!');
+                // 5. DISPARAR E-MAIL
+                $user->notify(new BoasVindasMorador($senhaTemporaria));
+
+                return redirect()->route('moradores.index')
+                    ->with('success', 'Morador cadastrado e e-mail enviado!');
+            });
+        } catch (\Exception $e) {
+            return back()->with('error', 'Erro ao cadastrar: ' . $e->getMessage());
+        }
     }
 
     public function edit(User $user)
