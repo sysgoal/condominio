@@ -166,6 +166,7 @@
             </div>
 
             <div class="p-6 space-y-4">
+              {{--  @foreach(\Spatie\Permission\Models\Role::whereNotIn('name', ['morador', 'admin'])->get() as $role) --}}
                 @foreach(\Spatie\Permission\Models\Role::all() as $role)
                 <label class="flex items-center p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-all">
                     <input type="checkbox" name="roles[]" value="{{ $role->name }}" 

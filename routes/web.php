@@ -30,6 +30,9 @@ Route::middleware('auth')->group(function () {
     // NOSSAS ROTAS PÚBLICAS DO CONDOMÍNIO (Para todos logados)
     // ---------------------------------------------------
     Route::get('/contas', [ContaController::class, 'index'])->name('contas.index');
+    Route::middleware(['auth', 'role:admin|sindico'])->group(function () {
+    Route::delete('/contas/{id}', [ContaController::class, 'destroy'])->name('contas.destroy');
+});
     Route::get('/documentos', [DocumentoController::class, 'index'])->name('documentos.index');
     Route::get('/enquetes', [EnqueteController::class, 'index'])->name('enquetes.index');
     Route::post('/enquetes/{enquete}/votar', [EnqueteController::class, 'votar'])->name('enquetes.votar');

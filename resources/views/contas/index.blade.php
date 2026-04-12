@@ -76,6 +76,17 @@
                             {{ ucfirst($conta->tipo) }}
                         </span>
                     </td>
+                    <td class="px-6 py-4 text-right">
+                @hasanyrole('admin|sindico')
+                    <form action="{{ route('contas.destroy', $conta->id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este registro?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="text-rose-600 hover:text-rose-900 transition-colors">
+                            <i class="fa-solid fa-trash-can"></i> Excluir
+                        </button>
+                    </form>
+                @endhasanyrole
+            </td>
                 </tr>
                 @empty
                 <tr>

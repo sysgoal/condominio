@@ -6,6 +6,7 @@ use App\Models\Conta;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
+
 class ContaController extends Controller
 {
     // Mostra a prestação de contas e o saldo em caixa
@@ -78,4 +79,20 @@ class ContaController extends Controller
             'graficoLabels', 'graficoValores'
         ));
     }
+
+    public function destroy($id)
+{
+    // 1. Verificação redundante de segurança
+    if (!auth()->user()->hasAnyRole(['admin', 'sindico'])) {
+        abort(403, 'Ação não autorizada.');
+    }
+
+    $registro = Conta::findOrFail($id);
+    
+    // 2. Executa a exclusão
+    $registro->delete();
+
+    // 3. Retorno com mensagem (que aparecerá no seu layout novo)
+    return redirect()->back()->with('success', 'Registro excluído com sucesso!');
+}
 }
